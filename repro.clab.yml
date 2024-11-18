@@ -1,0 +1,23 @@
+name: frrrepro
+
+topology:
+  nodes:
+    leaf2:
+      kind: linux
+      image: quay.io/frrouting/frr:master
+      binds:
+        - leaf2/daemons:/etc/frr/daemons
+        - leaf2/vtysh.conf:/etc/frr/vtysh.conf
+        - leaf2/frr.conf:/etc/frr/frr.conf
+        - leaf2/frr.conf.differentasn:/tmp/frr.conf.differentasn
+        - leaf2/setup.sh:/setup.sh
+
+    HOST2:
+      kind: linux
+      image: praqma/network-multitool:latest
+      binds:
+        - host2/setup.sh:/setup.sh
+      cmd: bash /setup.sh
+
+  links:
+    - endpoints: ["HOST2:eth1", "leaf2:eth2"]
